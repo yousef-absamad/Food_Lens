@@ -28,11 +28,11 @@ class LoginScreen extends StatelessWidget {
   bool isAllFieldsValidate() {
     final isEmailValid = _emailFieldKey.currentState?.validate() ?? false;
     final isPasswordValid = _passwordFieldKey.currentState?.validate() ?? false;
-    
+
     return isEmailValid && isPasswordValid;
-  }  
+  }
+
   void _login(BuildContext context) {
-   
     if (isAllFieldsValidate()) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -45,8 +45,7 @@ class LoginScreen extends StatelessWidget {
         MaterialPageRoute(builder: (context) => Home()),
         (route) => false,
       );
-    } 
-    else {
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Please fix the errors before logging in."),
@@ -116,17 +115,33 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 15),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SignUpScreen()),
-                );
-              },
-              child: const Text(
-                "Don't have an account? Sign Up",
-                style: TextStyle(color: Colors.green),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "Don't have an account?",
+                  style: TextStyle(color: Colors.green),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SignUpScreen()),
+                    );
+                  },
+                  child: const Text(
+                    "Sign Up",
+                    style: TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

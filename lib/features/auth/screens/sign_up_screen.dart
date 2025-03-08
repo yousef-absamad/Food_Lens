@@ -91,15 +91,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
   }
 
-  
   bool isAllFieldsValidate() {
     final isNameValid = _nameFieldKey.currentState?.validate() ?? false;
     final isEmailValid = _emailFieldKey.currentState?.validate() ?? false;
     final isPasswordValid = _passwordFieldKey.currentState?.validate() ?? false;
-    final isConfirmPasswordValid = _confirmPasswordFieldKey.currentState?.validate() ?? false;
+    final isConfirmPasswordValid =
+        _confirmPasswordFieldKey.currentState?.validate() ?? false;
     final isGenderValid = _genderFieldKey.currentState?.validate() ?? false;
     final isBirthDate = _birthDateFieldKey.currentState?.validate() ?? false;
-    return isNameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid && isGenderValid && isBirthDate;
+    return isNameValid &&
+        isEmailValid &&
+        isPasswordValid &&
+        isConfirmPasswordValid &&
+        isGenderValid &&
+        isBirthDate;
   }
 
   // دالة إنشاء الحساب
@@ -110,7 +115,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
         List<String> diseases = [];
         if (hasDiabetes) diseases.add("Diabetes");
         if (hasHypertension) diseases.add("Hypertension");
-        chronicInfo = diseases.isNotEmpty ? diseases.join(", ") : "Chronic diseases selected";
+        chronicInfo =
+            diseases.isNotEmpty
+                ? diseases.join(", ")
+                : "Chronic diseases selected";
       }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -122,7 +130,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
 
       // يمكنك إضافة عملية تسجيل الحساب أو الانتقال إلى شاشة أخرى هنا
-    }else{
+    } else {
       //print('sfsdf                                            sdfsd');
     }
   }
@@ -348,14 +356,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                 ),
                 const SizedBox(height: 15),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    "Already have an account? Login",
-                    style: TextStyle(color: Colors.green),
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Already have an account?",
+                      style: TextStyle(color: Colors.green),
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      child: const Text(
+                        "Login",
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 20),
               ],
