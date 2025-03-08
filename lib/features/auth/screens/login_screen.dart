@@ -25,31 +25,35 @@ class LoginScreen extends StatelessWidget {
     return null;
   }
 
-  void _login(BuildContext context) {
+  bool isAllFieldsValidate() {
     final isEmailValid = _emailFieldKey.currentState?.validate() ?? false;
     final isPasswordValid = _passwordFieldKey.currentState?.validate() ?? false;
-
-    // if (isPasswordValid && isEmailValid) {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //       content: Text("Login Successful"),
-    //       backgroundColor: Colors.green,
-    //     ),
-    //   );
-    //   Navigator.pushAndRemoveUntil(
-    //     context,
-    //     MaterialPageRoute(builder: (context) => Home()),
-    //     (route) => false,
-    //   );
-    // } 
-    // else {
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     const SnackBar(
-    //       content: Text("Please fix the errors before logging in."),
-    //       backgroundColor: Colors.red,
-    //     ),
-    //   );
-    // }
+    
+    return isEmailValid && isPasswordValid;
+  }  
+  void _login(BuildContext context) {
+   
+    if (isAllFieldsValidate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Login Successful"),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => Home()),
+        (route) => false,
+      );
+    } 
+    else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please fix the errors before logging in."),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override

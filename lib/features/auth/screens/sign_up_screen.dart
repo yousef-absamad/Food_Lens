@@ -10,13 +10,14 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   final GlobalKey<FormFieldState> _nameFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> _emailFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> _passwordFieldKey =
       GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> _confirmPasswordFieldKey =
+      GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> _genderFieldKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> _birthDateFieldKey =
       GlobalKey<FormFieldState>();
 
   // Controllers للحقول النصية
@@ -91,10 +92,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   
+  bool isAllFieldsValidate() {
+    final isNameValid = _nameFieldKey.currentState?.validate() ?? false;
+    final isEmailValid = _emailFieldKey.currentState?.validate() ?? false;
+    final isPasswordValid = _passwordFieldKey.currentState?.validate() ?? false;
+    final isConfirmPasswordValid = _confirmPasswordFieldKey.currentState?.validate() ?? false;
+    final isGenderValid = _genderFieldKey.currentState?.validate() ?? false;
+    final isBirthDate = _birthDateFieldKey.currentState?.validate() ?? false;
+    return isNameValid && isEmailValid && isPasswordValid && isConfirmPasswordValid && isGenderValid && isBirthDate;
+  }
 
- // دالة إنشاء الحساب
+  // دالة إنشاء الحساب
   void _signUp() {
-    if (_nameFieldKey.currentState!.validate()) {
+    if (isAllFieldsValidate()) {
       String chronicInfo = "Normal account";
       if (hasChronicDiseases) {
         List<String> diseases = [];
@@ -112,9 +122,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
 
       // يمكنك إضافة عملية تسجيل الحساب أو الانتقال إلى شاشة أخرى هنا
+    }else{
+      //print('sfsdf                                            sdfsd');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -190,7 +201,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                 DropdownButtonFormField<String>(
                   value: selectedGender,
-
+                  key: _genderFieldKey,
                   decoration: InputDecoration(
                     hintText: "Select Gender",
                     filled: true,
@@ -254,6 +265,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 15),
                 TextFormField(
+                  key: _birthDateFieldKey,
                   controller: birthDateController,
                   readOnly: true,
                   decoration: InputDecoration(
