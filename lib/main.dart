@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:food_lens/features/auth/screens/login_screen1.dart';
 import 'package:food_lens/features/home/screens/home_screen.dart';
 import 'package:food_lens/firebase_options.dart';
 import 'package:food_lens/intro/splash_screen.dart';
@@ -37,8 +38,8 @@ class _FoodLensAppState extends State<FoodLensApp> {
     return MaterialApp(
       title: 'Food Lens',
       //home: SplashScreen(),
-      //home: HomeScreen(),
-      home: Home(),
+      home: LoginScreen(),
+      //home: Home(),
     );
   }
 }
