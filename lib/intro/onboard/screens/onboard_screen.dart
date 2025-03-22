@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../../../features/auth/screens/login_screen.dart';
 import '../model/onboard_model.dart';
 
 class OnboardScreens extends StatefulWidget {
@@ -65,11 +64,11 @@ class _OnboardScreensState extends State<OnboardScreens> with SingleTickerProvid
 
   void _onNext() {
     if (_currentIndex == onboardModels.length - 1) {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) =>  LoginScreen()),
-        (Route<dynamic> route) => false    
-      );
+      // Navigator.pushAndRemoveUntil(
+      //   context,
+      //   MaterialPageRoute(builder: (context) =>  LoginScreen()),
+      //   (Route<dynamic> route) => false    
+      // );
     } else {
       _pageController.nextPage(
         duration: const Duration(milliseconds: 500),

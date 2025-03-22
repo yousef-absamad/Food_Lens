@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:food_lens/features/auth/screens/login_screen.dart';
 import 'package:food_lens/features/home/screens/home_screen.dart';
 
 import 'onboard/screens/onboard_screen.dart';
@@ -41,11 +40,11 @@ class _SplashScreenState extends State<SplashScreen>
 
     SchedulerBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(seconds: 2), () {
-        Navigator.pushReplacement(
-          context,
-          //MaterialPageRoute(builder: (context) => const OnboardScreens()),
-          MaterialPageRoute(builder: (context) => LoginScreen()),
-        );
+        // Navigator.pushReplacement(
+        //   context,
+        //   //MaterialPageRoute(builder: (context) => const OnboardScreens()),
+        //   MaterialPageRoute(builder: (context) => LoginScreen()),
+        // );
       });
     });
   }

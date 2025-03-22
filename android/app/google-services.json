@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "171360251103",
+    "project_id": "food-lens-1d706",
+    "storage_bucket": "food-lens-1d706.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:171360251103:android:e5cc0f00d4cc93b434cd6a",
+        "android_client_info": {
+          "package_name": "com.example.food_lens"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "171360251103-16p8jv1ukqgslv2toiu9aq7fshvttidn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMuMpczaM5gHftz8FUDdYzyl9oU9ofCF8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "171360251103-16p8jv1ukqgslv2toiu9aq7fshvttidn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
