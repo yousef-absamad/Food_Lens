@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../Profile/screens/profile_screen.dart';
 import '../captureImage/screens/camera_screen.dart'; 
 import 'screens/home_screen.dart'; 
 
@@ -17,7 +18,7 @@ class _HomeState extends State<Home> {
     CameraScreen(), 
     ChatBotScreen(), 
     //EducationalScreen(), 
-    //ProfileScreen(), 
+    ProfileScreen(), 
   ];
 
   @override
