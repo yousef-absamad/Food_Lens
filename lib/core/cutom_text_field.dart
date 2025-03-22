@@ -7,8 +7,8 @@ class CustomTextField extends StatefulWidget {
   final bool isPassword;
   final IconData icon;
   final GlobalKey<FormFieldState>? formFieldKey; 
-
   final String? Function(String?)? validator;
+  final String textFieldName;
 
   const CustomTextField({ 
     super.key,
@@ -19,6 +19,7 @@ class CustomTextField extends StatefulWidget {
     required this.icon,
     this.validator,
     required this.formFieldKey,
+    required this.textFieldName,
   });
 
   @override
@@ -33,6 +34,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(widget.textFieldName , style: TextStyle(fontWeight: FontWeight.w400 , fontSize: 15),),
+        SizedBox(height: 5),
         TextFormField(
           key:widget.formFieldKey,
           controller: widget.controller,
@@ -56,6 +59,14 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   )
                 : null,
             border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Colors.green),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Colors.green),
+            ),
+            enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: Colors.green),
             ),
