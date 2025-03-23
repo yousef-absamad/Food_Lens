@@ -12,7 +12,7 @@ Future awesomeDialog({
     dialogType: dialogType,
     title: title,
     desc: desc,
-    btnCancelOnPress: () {},
+    //btnCancelOnPress: () {},
     //btnOkOnPress: () {},
   ).show();
 }

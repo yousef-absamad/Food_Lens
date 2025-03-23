@@ -70,6 +70,18 @@ class LoginScreen extends StatelessWidget {
                         formFieldKey: loginCubit.passwordFieldKey,
                       ),
                     ),
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: TextButton(
+                        onPressed: () {
+                          loginCubit.sendForgetPassword();
+                        },
+                        child: Text(
+                          'Forget Password ?',
+                          style: TextStyle(color: Colors.blueGrey),
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 30),
                     BlocConsumer<LoginCubit, AuthState>(
                       listener: (context, state) {
@@ -94,7 +106,14 @@ class LoginScreen extends StatelessWidget {
                               backgroundColor: Colors.red,
                             ),
                           );
-                        } 
+                        } else if (state is AuthForgetPassSuccess) {
+                          awesomeDialog(
+                            context: context,
+                            dialogType: DialogType.success,
+                            title: 'Password Reset',
+                            desc: 'Check your email to reset your passwords.',
+                          );
+                        }
                       },
                       builder: (context, state) {
                         if (state is AuthLoading) {

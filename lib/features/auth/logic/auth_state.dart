@@ -18,3 +18,8 @@ class FieldsError extends AuthState {
   final String message;
   FieldsError(this.message);
 }
+
+class AuthForgetPassSuccess extends AuthState {
+  final String message;
+  AuthForgetPassSuccess(this.message);
+}

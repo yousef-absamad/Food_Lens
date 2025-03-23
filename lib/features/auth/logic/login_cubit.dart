@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:food_lens/features/auth/logic/auth_cubit.dart';
 import 'package:food_lens/features/auth/logic/auth_state.dart';
@@ -7,8 +9,32 @@ class LoginCubit extends BaseAuthCubit {
   LoginCubit() : super(AuthInitial());
 
   Future<void> login(BuildContext context, AuthMethod authMethod) async {
-    authenticate(context, authMethod , isSignUp: false);
+    authenticate(context, authMethod, isSignUp: false);
   }
+
+  Future<void> sendForgetPassword() async {
+  if (isEmailValidate()) {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: emailController.text,
+      );
+      emit(AuthForgetPassSuccess('Check your email to reset your password.'));
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-email') {
+        emit(AuthError('Please enter a valid email address.'));
+      } else if (e.code == 'too-many-requests') {
+        emit(AuthError('Too many attempts. Try again later.'));
+      } else {
+        emit(AuthError('An unexpected error occurred. Please try again.'));
+      }
+    } catch (e) {
+      emit(AuthError('Something went wrong. Please try again.'));
+    }
+  } else {
+    emit(FieldsError('Please enter a valid email.'));
+  }
+}
+
 
   @override
   bool isAllFieldsValidate() {
@@ -27,5 +53,10 @@ class LoginCubit extends BaseAuthCubit {
   String? validatePassword(String? value) {
     if (value == null || value.isEmpty) return "Please enter your password";
     return null;
+  }
+
+  bool isEmailValidate() {
+    final isEmailValid = emailFieldKey.currentState?.validate() ?? false;
+    return isEmailValid;
   }
 }

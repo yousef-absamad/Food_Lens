@@ -5,7 +5,7 @@ import 'package:food_lens/features/auth/emailVerification/views/email_verificati
 import 'package:food_lens/features/auth/screens/login_screen.dart';
 import 'package:food_lens/features/home/screens/home_screen.dart';
 import 'package:food_lens/firebase_options.dart';
-import 'package:food_lens/intro/splash_screen.dart';
+import 'package:food_lens/features/intro/splash_screen.dart';
 
 import 'features/home/home.dart';
 
@@ -38,8 +38,8 @@ class _FoodLensAppState extends State<FoodLensApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Food Lens',
-      //home: SplashScreen(),
-      home: LoginScreen(),
+      home: SplashScreen(),
+      //home: LoginScreen(),
       //home: EmailVerificationScreen(),
     );
   }
