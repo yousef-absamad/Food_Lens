@@ -7,33 +7,45 @@ import 'package:food_lens/features/auth/repo/auth_method.dart';
 import 'package:food_lens/features/auth/repo/email_password_auth.dart';
 import 'package:food_lens/features/home/home.dart';
 
-
 abstract class BaseAuthCubit extends Cubit<AuthState> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
+  final TextEditingController fullNameController = TextEditingController();
+  
+  final GlobalKey<FormFieldState> fullNameFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> emailFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> passwordFieldKey = GlobalKey<FormFieldState>();
 
   BaseAuthCubit(super.initialState);
 
-  Future<void> authenticate(BuildContext context, AuthMethod authMethod, {required bool isSignUp}) async {
+  Future<User?> authenticate(
+    BuildContext context,
+    AuthMethod authMethod, {
+    required bool isSignUp,
+  }) async {
     try {
       if (authMethod is EmailPasswordAuth && !isAllFieldsValidate()) {
         emit(FieldsError("Please fill in all fields"));
-        return;
+        return null;
       }
 
       emit(AuthLoading());
 
-      await authMethod.authenticate(); // No boolean check, relies on exceptions
+      final User? user = await authMethod.authenticate();
+
+      if (user == null) {
+        emit(AuthError("Authentication failed. Please try again."));
+        return null;
+      }
 
       emit(AuthSuccess(isSignUp ? "Sign Up Successful" : "Login Successful"));
 
       if (authMethod is EmailPasswordAuth && isSignUp) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const EmailVerificationScreen()),
+          MaterialPageRoute(
+            builder: (context) => const Home(),
+          ),
         );
       } else {
         Navigator.pushReplacement(
@@ -41,6 +53,7 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
           MaterialPageRoute(builder: (context) => const Home()),
         );
       }
+      return user;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'invalid-email':
@@ -56,7 +69,9 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
           emit(AuthError("This email is already registered."));
           break;
         case 'weak-password':
-          emit(AuthError("The password is too weak. Use at least 6 characters."));
+          emit(
+            AuthError("The password is too weak. Use at least 6 characters."),
+          );
           break;
         case 'operation-not-allowed':
           emit(AuthError("This sign-in method is not enabled."));
@@ -68,10 +83,16 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
           emit(AuthError("This account has been disabled."));
           break;
         default:
-          emit(AuthError("Authentication failed: ${e.message ?? 'Unknown error'}"));
+          emit(
+            AuthError("Authentication failed: ${e.message ?? 'Unknown error'}"),
+          );
       }
     } on FirebaseException catch (e) {
-      emit(AuthError("A Firebase error occurred: ${e.message ?? 'Please check your connection.'}"));
+      emit(
+        AuthError(
+          "A Firebase error occurred: ${e.message ?? 'Please check your connection.'}",
+        ),
+      );
     } catch (e) {
       if (e.toString().contains("Google Sign-In was canceled")) {
         emit(AuthError("Google Sign-In was canceled."));
@@ -80,6 +101,7 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
         print("An unexpected error occurred: ${e.toString()}");
       }
     }
+    return null;
   }
 
   String? validateEmail(String? value);

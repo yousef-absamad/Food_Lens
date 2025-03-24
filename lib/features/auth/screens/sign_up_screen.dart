@@ -54,9 +54,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       child: CustomTextField(
                         textFieldName: 'Full name',
-                        formFieldKey: signUpCubit.nameFieldKey,
+                        formFieldKey: signUpCubit.fullNameFieldKey,
                         hintText: "Enter Name",
-                        controller: signUpCubit.nameController,
+                        controller: signUpCubit.fullNameController,
                         keyboardType: TextInputType.text,
                         icon: Icons.person,
                         validator: signUpCubit.validateName,
@@ -130,6 +130,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                     password:
                                         signUpCubit.passwordController.text,
                                     isSignUp: true,
+                                    fullName: signUpCubit.fullNameController.text,
                                   );
                               signUpCubit.signUp(context, emailPasswordAuth);
                             },
@@ -169,11 +170,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     InkWell(
                       onTap: () {
                         final AuthMethod googlrAuth = GoogleAuth();
-                        signUpCubit.authenticate(
-                          context,
-                          googlrAuth,
-                          isSignUp: true,
-                        );
+                        signUpCubit.signUp(context, googlrAuth);
                       },
                       child: Container(
                         padding: EdgeInsets.all(5),

@@ -1,15 +1,23 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
+import 'package:food_lens/features/Profile/repo/user_epository.dart';
 import 'package:food_lens/features/auth/logic/auth_cubit.dart';
 import 'package:food_lens/features/auth/logic/auth_state.dart';
 import 'package:food_lens/features/auth/repo/auth_method.dart';
 
 class LoginCubit extends BaseAuthCubit {
+  UserRepository userRepository = UserRepository();
   LoginCubit() : super(AuthInitial());
 
   Future<void> login(BuildContext context, AuthMethod authMethod) async {
-    authenticate(context, authMethod, isSignUp: false);
+    final User? user = await authenticate(context, authMethod, isSignUp: false);
+
+    if (user != null) {
+      userRepository.saveUserData(
+        fullName: user.displayName ?? "",
+        email: user.email ?? "",
+      );
+    }
   }
 
   Future<void> sendForgetPassword() async {

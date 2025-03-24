@@ -127,13 +127,13 @@ class LoginScreen extends StatelessWidget {
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: () {
-                              final AuthMethod emailPasswordAuth =
-                                  EmailPasswordAuth(
-                                    isSignUp: false,
-                                    email: loginCubit.emailController.text,
-                                    password:
-                                        loginCubit.passwordController.text,
-                                  );
+                              final AuthMethod
+                              emailPasswordAuth = EmailPasswordAuth(
+                                isSignUp: false,
+                                email: loginCubit.emailController.text,
+                                password: loginCubit.passwordController.text,
+                                fullName: loginCubit.fullNameController.text,
+                              );
                               loginCubit.login(context, emailPasswordAuth);
                             },
                             style: ElevatedButton.styleFrom(
