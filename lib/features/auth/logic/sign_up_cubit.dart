@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/widgets.dart';
 import 'package:food_lens/features/Profile/repo/user_epository.dart';
 import 'package:food_lens/features/auth/logic/auth_cubit.dart';
@@ -17,14 +16,7 @@ class SignUpCubit extends BaseAuthCubit {
       return;
     }
 
-    final User? user = await authenticate(context, authMethod, isSignUp: true);
-    
-    if (user != null) {
-      userRepository.saveUserData(
-        fullName: user.displayName ?? "",
-        email: user.email ?? "",
-      );
-    }
+    await authenticate(context, authMethod, isSignUp: true);
   }
 
   @override

@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:food_lens/features/Profile/repo/user_epository.dart';
+import 'package:food_lens/features/Profile/screens/complete_user_profile.dart';
 import 'package:food_lens/features/auth/emailVerification/views/email_verification_screen.dart';
 import 'package:food_lens/features/auth/logic/auth_state.dart';
 import 'package:food_lens/features/auth/repo/auth_method.dart';
@@ -11,10 +14,12 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController fullNameController = TextEditingController();
-  
-  final GlobalKey<FormFieldState> fullNameFieldKey = GlobalKey<FormFieldState>();
+
+  final GlobalKey<FormFieldState> fullNameFieldKey =
+      GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> emailFieldKey = GlobalKey<FormFieldState>();
-  final GlobalKey<FormFieldState> passwordFieldKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> passwordFieldKey =
+      GlobalKey<FormFieldState>();
 
   BaseAuthCubit(super.initialState);
 
@@ -38,21 +43,17 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
         return null;
       }
 
+      final DocumentSnapshot userDoc =
+          await FirebaseFirestore.instance
+              .collection("users")
+              .doc(user.uid)
+              .get();
+
+      final bool isNewUser = !userDoc.exists;
+
       emit(AuthSuccess(isSignUp ? "Sign Up Successful" : "Login Successful"));
 
-      if (authMethod is EmailPasswordAuth && isSignUp) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const Home(),
-          ),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const Home()),
-        );
-      }
+      await _handleUserNavigation(context, user, isSignUp, isNewUser);
       return user;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
@@ -102,6 +103,51 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
       }
     }
     return null;
+  }
+
+  Future<void> _handleUserNavigation(
+    BuildContext context,
+    User user,
+    bool isSignUp,
+    bool isNewUser,
+  ) async {
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    if (isNewUser) {
+      await UserRepository().saveUserData(
+        fullName: user.displayName ?? "",
+        email: user.email ?? "",
+      );
+    }
+
+    if (!user.emailVerified) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const EmailVerificationScreen(),
+        ),
+      );
+      return;
+    }
+
+    final DocumentSnapshot userDoc = await _firestore.collection("users").doc(user.uid).get();
+
+    final data = userDoc.data() as Map<String, dynamic>?;
+
+    if (isNewUser ||
+        data == null ||
+        data["birthDate"] == null ||
+        data["gender"] == null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const CompleteProfileScreen()),
+      );
+      return;
+    }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const Home()),
+    );
   }
 
   String? validateEmail(String? value);

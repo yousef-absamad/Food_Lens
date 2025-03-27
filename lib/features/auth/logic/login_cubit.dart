@@ -10,39 +10,31 @@ class LoginCubit extends BaseAuthCubit {
   LoginCubit() : super(AuthInitial());
 
   Future<void> login(BuildContext context, AuthMethod authMethod) async {
-    final User? user = await authenticate(context, authMethod, isSignUp: false);
-
-    if (user != null) {
-      userRepository.saveUserData(
-        fullName: user.displayName ?? "",
-        email: user.email ?? "",
-      );
-    }
+    await authenticate(context, authMethod, isSignUp: false);
   }
 
   Future<void> sendForgetPassword() async {
-  if (isEmailValidate()) {
-    try {
-      await FirebaseAuth.instance.sendPasswordResetEmail(
-        email: emailController.text,
-      );
-      emit(AuthForgetPassSuccess('Check your email to reset your password.'));
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'invalid-email') {
-        emit(AuthError('Please enter a valid email address.'));
-      } else if (e.code == 'too-many-requests') {
-        emit(AuthError('Too many attempts. Try again later.'));
-      } else {
-        emit(AuthError('An unexpected error occurred. Please try again.'));
+    if (isEmailValidate()) {
+      try {
+        await FirebaseAuth.instance.sendPasswordResetEmail(
+          email: emailController.text,
+        );
+        emit(AuthForgetPassSuccess('Check your email to reset your password.'));
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'invalid-email') {
+          emit(AuthError('Please enter a valid email address.'));
+        } else if (e.code == 'too-many-requests') {
+          emit(AuthError('Too many attempts. Try again later.'));
+        } else {
+          emit(AuthError('An unexpected error occurred. Please try again.'));
+        }
+      } catch (e) {
+        emit(AuthError('Something went wrong. Please try again.'));
       }
-    } catch (e) {
-      emit(AuthError('Something went wrong. Please try again.'));
+    } else {
+      emit(FieldsError('Please enter a valid email.'));
     }
-  } else {
-    emit(FieldsError('Please enter a valid email.'));
   }
-}
-
 
   @override
   bool isAllFieldsValidate() {
