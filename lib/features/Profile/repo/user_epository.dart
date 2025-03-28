@@ -11,10 +11,6 @@ class UserRepository {
   }) async {
     final user = _auth.currentUser;
     if (user != null) {
-      print(
-        "Saving to Firestore: Name = $fullName, Email = $email, UID = ${user.uid}",
-      );
-
       await _firestore.collection("users").doc(user.uid).set({
         "fullName": fullName,
         "email": email,
@@ -23,4 +19,28 @@ class UserRepository {
     }
   }
 
+  Future<void> saveAdditionalUserData({
+    String? gender,
+    DateTime? birthDate,
+    String? weight,
+    String? height,
+    bool hasDiabetes = false,
+    bool hasHypertension = false,
+  }) async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      try {
+        await _firestore.collection("users").doc(user.uid).update({
+          "gender": gender,
+          "birthDate": birthDate?.toIso8601String(),
+          "hasDiabetes": hasDiabetes,
+          "hasHypertension": hasHypertension,
+          "weight": weight,
+          "height": height,
+        });
+      } catch (e) {
+        throw Exception("An error occurred while saving data.");
+      }
+    }
+  }
 }
