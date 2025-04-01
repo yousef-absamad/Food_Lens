@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_lens/features/Profile/repo/user_epository.dart';
-import 'package:food_lens/features/Profile/screens/complete_user_profile.dart';
+import 'package:food_lens/features/Profile/views/screens/complete_user_profile.dart';
 import 'package:food_lens/features/auth/emailVerification/views/email_verification_screen.dart';
 import 'package:food_lens/features/auth/logic/auth_state.dart';
 import 'package:food_lens/features/auth/repo/auth_method.dart';
@@ -140,7 +140,7 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
         data["gender"] == null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const CompleteProfileScreen()),
+        MaterialPageRoute(builder: (context) => const ProfileManagerScreen(mode: ProfileMode.complete)),
       );
       return;
     }

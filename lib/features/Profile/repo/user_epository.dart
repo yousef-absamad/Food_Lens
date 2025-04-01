@@ -43,4 +43,23 @@ class UserRepository {
       }
     }
   }
+
+  Future<Map<String, dynamic>?> getUserData() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      try {
+        final DocumentSnapshot doc =
+            await _firestore.collection("users").doc(user.uid).get();
+
+        if (doc.exists) {
+          return doc.data() as Map<String, dynamic>;
+        } else {
+          return null;
+        }
+      } catch (e) {
+        throw Exception("An error occurred while fetching user data: $e");
+      }
+    }
+    return null;
+  }
 }

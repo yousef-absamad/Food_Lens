@@ -47,15 +47,15 @@ class EmailVerificationCubit extends Cubit<EmailVerificationState> {
   }
 
   void _checkEmailVerificationPeriodically() {
-    // _verificationTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
-    //   await FirebaseAuth.instance.currentUser?.reload();
-    //   User? user = FirebaseAuth.instance.currentUser;
-    //   if (user != null && user.emailVerified) {
-    //     emit(EmailVerificationSuccess());
-    //     _verificationTimer?.cancel();
-    //     _countdownTimer?.cancel();
-    //   }
-    // });
+    _verificationTimer = Timer.periodic(const Duration(seconds: 5), (timer) async {
+      await FirebaseAuth.instance.currentUser?.reload();
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null && user.emailVerified) {
+        emit(EmailVerificationSuccess());
+        _verificationTimer?.cancel();
+        _countdownTimer?.cancel();
+      }
+    });
   }
 
   @override

@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:food_lens/features/home/screens/home_screen.dart';
-
+import 'package:food_lens/features/Profile/views/screens/complete_user_profile.dart';
 import '../cubit/email_verification_cubit.dart';
 import '../cubit/email_verification_state.dart';
 
@@ -102,7 +101,10 @@ class EmailVerificationScreen extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                         builder:
-                                            (context) => const HomeScreen(),
+                                            (context) =>
+                                                const ProfileManagerScreen(
+                                                  mode: ProfileMode.complete,
+                                                ),
                                       ),
                                     );
                                   }
