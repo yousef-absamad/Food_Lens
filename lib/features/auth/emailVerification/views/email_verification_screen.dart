@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:food_lens/features/Profile/views/screens/complete_user_profile.dart';
+import 'package:food_lens/features/Profile/views/screens/profile_manager_screen.dart';
 import '../cubit/email_verification_cubit.dart';
 import '../cubit/email_verification_state.dart';
 
