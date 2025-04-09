@@ -7,8 +7,6 @@ import 'package:food_lens/core/constans/constans.dart';
 import 'package:food_lens/features/healthContent/videos/cubit/videos_state.dart';
 import 'package:http/http.dart' as http;
 
-
-
 class VideosCubit extends Cubit<VideosState> {
   VideosCubit() : super(const VideosState());
 
@@ -29,8 +27,8 @@ class VideosCubit extends Cubit<VideosState> {
 
       do {
         final videos = await _fetchPlaylistVideos(
-          playlistId: _playlistId,
-          //playlistId: "PLj1uh4JbO1owV6B7qpW8QPafiIctMRFBL",
+          //playlistId: _playlistId,
+          playlistId: "PLqbUw5kmg6AHY6eE1VuPaPLSRejkkaTrb",
           pageToken: nextPageToken,
         );
         allVideos.addAll(videos);
@@ -105,6 +103,8 @@ class VideosCubit extends Cubit<VideosState> {
     }
   }
 
+  
+
   List<Map<String, String>> _getCurrentPageVideos(
     List<Map<String, String>> allVideos,
     int currentPage,
@@ -138,11 +138,25 @@ class VideosCubit extends Cubit<VideosState> {
     }
   }
 
-  void updatePaginationVisibility(double scrollPosition, double maxScroll) {
-    if (scrollPosition >= maxScroll - 50) {
-      emit(state.copyWith(showPagination: true));
-    } else {
-      emit(state.copyWith(showPagination: false));
-    }
+  
+
+  void goToFirstPage() {
+    final newPage = 0;
+    emit(
+      state.copyWith(
+        currentPage: newPage,
+        currentPageVideos: _getCurrentPageVideos(state.allVideos, newPage),
+      ),
+    );
+  }
+
+  void goToLastPage() {
+    final lastPage = ((state.allVideos.length - 1) ~/ _pageSize);
+    emit(
+      state.copyWith(
+        currentPage: lastPage,
+        currentPageVideos: _getCurrentPageVideos(state.allVideos, lastPage),
+      ),
+    );
   }
 }

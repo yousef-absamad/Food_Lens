@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:food_lens/features/healthContent/videos/cubit/videos_cubit.dart';
 import 'package:food_lens/features/healthContent/videos/cubit/videos_state.dart';
 import 'package:food_lens/features/healthContent/videos/screens/video_player_screen.dart';
+
+import '../../../../core/widgets/error_screen.dart';
 
 class VideosScreen extends StatelessWidget {
   final String userCondition;
@@ -32,17 +33,12 @@ class _VideosScreenContent extends StatefulWidget {
 
 class _VideosScreenContentState extends State<_VideosScreenContent> {
   late ScrollController _scrollController;
+  int _lastPage = -1;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      context.read<VideosCubit>().updatePaginationVisibility(
-        _scrollController.position.pixels,
-        _scrollController.position.maxScrollExtent,
-      );
-    });
   }
 
   @override
@@ -60,15 +56,35 @@ class _VideosScreenContentState extends State<_VideosScreenContent> {
     );
   }
 
+  void _scrollToTop() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<VideosCubit, VideosState>(
+    final videosCubit = context.read<VideosCubit>();
+    return BlocConsumer<VideosCubit, VideosState>(
+      
+      listener: (context, state) {
+        if (state.status == VideoStatus.success &&
+            state.currentPage != _lastPage) {
+          _scrollToTop();
+          _lastPage = state.currentPage;
+        }
+      },
       builder: (context, state) {
         return RefreshIndicator(
-          onRefresh:
-              () => context
-                  .read<VideosCubit>()
-                  .initializePlaylistAndFetchVideos(widget.userCondition),
+          onRefresh: () async {
+            await videosCubit.initializePlaylistAndFetchVideos(
+              widget.userCondition,
+            );
+          },
           child: CustomScrollView(
             controller: _scrollController,
             physics: const AlwaysScrollableScrollPhysics(),
@@ -79,7 +95,7 @@ class _VideosScreenContentState extends State<_VideosScreenContent> {
                 snap: true,
                 pinned: false,
               ),
-              _buildBody(context, state),
+              SliverToBoxAdapter(child: _buildBody(context, state)),
             ],
           ),
         );
@@ -88,17 +104,22 @@ class _VideosScreenContentState extends State<_VideosScreenContent> {
   }
 
   Widget _buildBody(BuildContext context, VideosState state) {
+    final videosCubit = context.read<VideosCubit>();
     switch (state.status) {
       case VideoStatus.initial:
       case VideoStatus.loading:
-        return const SliverFillRemaining(
-          child: Center(child: CircularProgressIndicator()),
+        return SizedBox(
+          height: 600,
+          child: const Center(child: CircularProgressIndicator()),
         );
       case VideoStatus.success:
-        return SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              if (index < state.currentPageVideos.length) {
+        return Column(
+          children: [
+            ListView.builder(
+              itemCount: state.currentPageVideos.length,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
                 final video = state.currentPageVideos[index];
                 return GestureDetector(
                   onTap: () => playVideo(video['videoId']!),
@@ -130,25 +151,14 @@ class _VideosScreenContentState extends State<_VideosScreenContent> {
                               }
                             },
                             errorBuilder: (context, error, stackTrace) {
-                              return const SizedBox(
+                              return Container(
+                                color: Colors.grey[300],
                                 height: 200,
                                 child: Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.broken_image,
-                                        size: 50,
-                                        color: Colors.red,
-                                      ),
-                                      Text(
-                                        "Failed to load image",
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ],
+                                  child: Icon(
+                                    Icons.broken_image,
+                                    size: 50,
+                                    color: Colors.grey,
                                   ),
                                 ),
                               );
@@ -171,86 +181,64 @@ class _VideosScreenContentState extends State<_VideosScreenContent> {
                     ),
                   ),
                 );
-              } else if (index == state.currentPageVideos.length &&
-                  state.showPagination) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      IconButton(
-                        onPressed:
-                            state.currentPage > 0
-                                ? () =>
-                                    context.read<VideosCubit>().previousPage()
-                                : null,
-                        icon: const Icon(Icons.arrow_back, size: 35),
-                        tooltip: 'Previous Page',
-                      ),
-                      Text(
-                        'Page ${state.currentPage + 1} of ${((state.allVideos.length - 1) ~/ 20) + 1}',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed:
-                            (state.currentPage + 1) * 20 <
-                                    state.allVideos.length
-                                ? () => context.read<VideosCubit>().nextPage()
-                                : null,
-                        icon: const Icon(Icons.arrow_forward, size: 35),
-                        tooltip: 'Next Page',
-                      ),
-                    ],
+              },
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed:
+                        state.currentPage > 0
+                            ? () => videosCubit.goToFirstPage()
+                            : null,
+                    icon: const Icon(Icons.first_page, size: 35),
+                    tooltip: 'First Page',
                   ),
-                );
-              }
-              return const SizedBox(height: 10);
-            },
-            childCount:
-                state.currentPageVideos.length +
-                (state.showPagination ? 1 : 0) +
-                1,
-          ),
-        );
-      case VideoStatus.failure:
-        return SliverFillRemaining(
-        hasScrollBody: false,
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SvgPicture.asset("assets/image/404 Error-amico.svg"),
-                Text(
-                  state.errorMessage ?? "An unknown error occurred",
-                  style: const TextStyle(fontSize: 18, color: Colors.red),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                  IconButton(
+                    onPressed:
+                        state.currentPage > 0
+                            ? () => videosCubit.previousPage()
+                            : null,
+                    icon: const Icon(Icons.arrow_back, size: 35),
+                    tooltip: 'Previous Page',
+                  ),
+                  Text(
+                    'Page ${state.currentPage + 1} of ${((state.allVideos.length - 1) ~/ 20) + 1}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
-                  onPressed:
-                      () => context
-                          .read<VideosCubit>()
-                          .initializePlaylistAndFetchVideos(
-                            widget.userCondition,
-                          ),
-                  child: const Text(
-                    "Retry",
-                    style: TextStyle(color: Colors.white),
+                  IconButton(
+                    onPressed:
+                        (state.currentPage + 1) * 20 < state.allVideos.length
+                            ? () => videosCubit.nextPage()
+                            : null,
+                    icon: const Icon(Icons.arrow_forward, size: 35),
+                    tooltip: 'Next Page',
                   ),
-                ),
-              ],
+                  IconButton(
+                    onPressed:
+                        (state.currentPage + 1) * 20 < state.allVideos.length
+                            ? () => videosCubit.goToLastPage()
+                            : null,
+                    icon: const Icon(Icons.last_page, size: 35),
+                    tooltip: 'Last Page',
+                  ),
+                ],
+              ),
             ),
-          ),
+          ],
+        );
+      case VideoStatus.failure:
+        return ErrorScreen(
+          errorMessage: state.errorMessage ?? "An unknown error occurred",
+          onRetry:
+              () => context
+                  .read<VideosCubit>()
+                  .initializePlaylistAndFetchVideos(widget.userCondition),
         );
     }
   }
