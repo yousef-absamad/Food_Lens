@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_lens/core/constans/constans.dart';
 import 'package:food_lens/features/healthContent/videos/cubit/videos_state.dart';
@@ -11,16 +11,15 @@ class VideosCubit extends Cubit<VideosState> {
   VideosCubit() : super(const VideosState());
 
   final String apiKey = Constants.youtubeApiKey;
-  late String _playlistId;
+  //late String _playlistId;
   String? _nextPageToken;
   final int _maxResultsPerPage = 20;
-  final int _pageSize = 20;
   final Random _random = Random();
 
   Future<void> initializePlaylistAndFetchVideos(String userCondition) async {
     emit(state.copyWith(status: VideoStatus.loading));
     try {
-      _playlistId = await _getPlaylistId(userCondition);
+      //_playlistId = await _getPlaylistId(userCondition);
 
       List<Map<String, String>> allVideos = [];
       String? nextPageToken;
@@ -40,7 +39,11 @@ class VideosCubit extends Cubit<VideosState> {
       emit(
         state.copyWith(
           allVideos: allVideos,
-          currentPageVideos: _getCurrentPageVideos(allVideos, 0),
+          currentPageVideos: _getCurrentPageVideos(
+            allVideos,
+            0,
+            state.itemsPerPage,
+          ),
           status: VideoStatus.success,
         ),
       );
@@ -57,19 +60,19 @@ class VideosCubit extends Cubit<VideosState> {
     }
   }
 
-  Future<String> _getPlaylistId(String condition) async {
-    final doc =
-        await FirebaseFirestore.instance
-            .collection('playlists')
-            .doc(condition)
-            .get();
+  // Future<String> _getPlaylistId(String condition) async {
+  //   final doc =
+  //       await FirebaseFirestore.instance
+  //           .collection('playlists')
+  //           .doc(condition)
+  //           .get();
 
-    if (doc.exists) {
-      return doc['playlistId'] as String;
-    } else {
-      throw Exception('No playlist found for this condition');
-    }
-  }
+  //   if (doc.exists) {
+  //     return doc['playlistId'] as String;
+  //   } else {
+  //     throw Exception('No playlist found for this condition');
+  //   }
+  // }
 
   Future<List<Map<String, String>>> _fetchPlaylistVideos({
     required String playlistId,
@@ -103,59 +106,71 @@ class VideosCubit extends Cubit<VideosState> {
     }
   }
 
-  
-
   List<Map<String, String>> _getCurrentPageVideos(
     List<Map<String, String>> allVideos,
     int currentPage,
+    int itemsPerPage,
   ) {
-    final start = currentPage * _pageSize;
-    final end = (start + _pageSize).clamp(0, allVideos.length);
+    final start = currentPage * itemsPerPage;
+    final end = (start + itemsPerPage).clamp(0, allVideos.length);
     return allVideos.sublist(start, end);
   }
 
-  void nextPage() {
-    if ((state.currentPage + 1) * _pageSize < state.allVideos.length) {
-      final newPage = state.currentPage + 1;
+  void goToNextPage() {
+    final nextPage = state.currentPage + 1;
+    if (nextPage < state.totalPages) {
       emit(
         state.copyWith(
-          currentPage: newPage,
-          currentPageVideos: _getCurrentPageVideos(state.allVideos, newPage),
+          currentPage: nextPage,
+          currentPageVideos: _getCurrentPageVideos(
+            state.allVideos,
+            nextPage,
+            state.itemsPerPage,
+          ),
         ),
       );
     }
   }
 
-  void previousPage() {
-    if (state.currentPage > 0) {
-      final newPage = state.currentPage - 1;
+  void goToPreviousPage() {
+    final prevPage = state.currentPage - 1;
+    if (prevPage >= 0) {
       emit(
         state.copyWith(
-          currentPage: newPage,
-          currentPageVideos: _getCurrentPageVideos(state.allVideos, newPage),
+          currentPage: prevPage,
+          currentPageVideos: _getCurrentPageVideos(
+            state.allVideos,
+            prevPage,
+            state.itemsPerPage,
+          ),
         ),
       );
     }
   }
-
-  
 
   void goToFirstPage() {
-    final newPage = 0;
     emit(
       state.copyWith(
-        currentPage: newPage,
-        currentPageVideos: _getCurrentPageVideos(state.allVideos, newPage),
+        currentPage: 0,
+        currentPageVideos: _getCurrentPageVideos(
+          state.allVideos,
+          0,
+          state.itemsPerPage,
+        ),
       ),
     );
   }
 
   void goToLastPage() {
-    final lastPage = ((state.allVideos.length - 1) ~/ _pageSize);
+    final lastPage = state.totalPages - 1;
     emit(
       state.copyWith(
         currentPage: lastPage,
-        currentPageVideos: _getCurrentPageVideos(state.allVideos, lastPage),
+        currentPageVideos: _getCurrentPageVideos(
+          state.allVideos,
+          lastPage,
+          state.itemsPerPage,
+        ),
       ),
     );
   }
