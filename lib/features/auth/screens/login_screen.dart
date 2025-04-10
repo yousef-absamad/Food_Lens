@@ -9,8 +9,9 @@ import 'package:food_lens/features/auth/repo/email_password_auth.dart';
 import 'package:food_lens/features/auth/repo/google_auth.dart';
 import 'package:food_lens/features/auth/screens/sign_up_screen.dart';
 
-import '../../../core/awesome_dialog.dart';
-import '../../../core/cutom_text_field.dart';
+import '../../../core/widgets/awesome_dialog.dart';
+import '../../../core/widgets/custom_button.dart';
+import '../../../core/widgets/cutom_text_field.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -46,7 +47,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                     ),
                     Form(
-                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      autovalidateMode: AutovalidateMode.disabled,
                       child: CustomTextField(
                         textFieldName: 'Email',
                         hintText: "Enter Email Address",
@@ -123,34 +124,18 @@ class LoginScreen extends StatelessWidget {
                             ),
                           );
                         }
-                        return SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              final AuthMethod
-                              emailPasswordAuth = EmailPasswordAuth(
-                                isSignUp: false,
-                                email: loginCubit.emailController.text,
-                                password: loginCubit.passwordController.text,
-                                fullName: loginCubit.fullNameController.text,
-                              );
-                              loginCubit.login(context, emailPasswordAuth);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            child: const Text(
-                              "Login",
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
+                        return CustomButton(
+                          label: "Login",
+                          onPressed: () {
+                            final AuthMethod emailPasswordAuth =
+                                EmailPasswordAuth(
+                                  isSignUp: false,
+                                  email: loginCubit.emailController.text,
+                                  password: loginCubit.passwordController.text,
+                                  fullName: loginCubit.fullNameController.text,
+                                );
+                            loginCubit.login(context, emailPasswordAuth);
+                          },
                         );
                       },
                     ),

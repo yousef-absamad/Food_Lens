@@ -15,11 +15,9 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController fullNameController = TextEditingController();
 
-  final GlobalKey<FormFieldState> fullNameFieldKey =
-      GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> fullNameFieldKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> emailFieldKey = GlobalKey<FormFieldState>();
-  final GlobalKey<FormFieldState> passwordFieldKey =
-      GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> passwordFieldKey = GlobalKey<FormFieldState>();
 
   BaseAuthCubit(super.initialState);
 
@@ -57,35 +55,18 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
       return user;
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
-        case 'invalid-email':
-          emit(AuthError("The email address is badly formatted."));
-          break;
-        case 'user-not-found':
-          emit(AuthError("No user found with this email."));
-          break;
-        case 'wrong-password':
-          emit(AuthError("Incorrect password. Please try again."));
+        case 'invalid-credential':
+          emit(AuthError("Invalid email or password. Please check your credentials and try again."));
           break;
         case 'email-already-in-use':
           emit(AuthError("This email is already registered."));
           break;
-        case 'weak-password':
-          emit(
-            AuthError("The password is too weak. Use at least 6 characters."),
-          );
-          break;
-        case 'operation-not-allowed':
-          emit(AuthError("This sign-in method is not enabled."));
-          break;
         case 'too-many-requests':
           emit(AuthError("Too many attempts. Please try again later."));
           break;
-        case 'user-disabled':
-          emit(AuthError("This account has been disabled."));
-          break;
         default:
           emit(
-            AuthError("Authentication failed: ${e.message ?? 'Unknown error'}"),
+            AuthError("Authentication failed: Please check your connection."),
           );
       }
     } on FirebaseException catch (e) {
@@ -99,7 +80,6 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
         emit(AuthError("Google Sign-In was canceled."));
       } else {
         emit(AuthError("An unexpected error occurred: ${e.toString()}"));
-        print("An unexpected error occurred: ${e.toString()}");
       }
     }
     return null;
@@ -111,7 +91,7 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
     bool isSignUp,
     bool isNewUser,
   ) async {
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
     if (isNewUser) {
       await UserRepository().saveUserData(
@@ -130,7 +110,8 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
       return;
     }
 
-    final DocumentSnapshot userDoc = await _firestore.collection("users").doc(user.uid).get();
+    final DocumentSnapshot userDoc =
+        await firestore.collection("users").doc(user.uid).get();
 
     final data = userDoc.data() as Map<String, dynamic>?;
 
@@ -140,7 +121,11 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
         data["gender"] == null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const ProfileManagerScreen(mode: ProfileMode.complete)),
+        MaterialPageRoute(
+          builder:
+              (context) =>
+                  const ProfileManagerScreen(mode: ProfileMode.complete),
+        ),
       );
       return;
     }
@@ -150,7 +135,13 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
     );
   }
 
-  String? validateEmail(String? value);
+
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) return "Please enter your email";
+    final regex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
+    if (!regex.hasMatch(value)) return "Enter a valid email address";
+    return null;
+  }
 
   String? validatePassword(String? value);
 

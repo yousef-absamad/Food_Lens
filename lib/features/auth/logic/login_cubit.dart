@@ -21,12 +21,10 @@ class LoginCubit extends BaseAuthCubit {
         );
         emit(AuthForgetPassSuccess('Check your email to reset your password.'));
       } on FirebaseAuthException catch (e) {
-        if (e.code == 'invalid-email') {
-          emit(AuthError('Please enter a valid email address.'));
-        } else if (e.code == 'too-many-requests') {
+        if (e.code == 'too-many-requests') {
           emit(AuthError('Too many attempts. Try again later.'));
         } else {
-          emit(AuthError('An unexpected error occurred. Please try again.'));
+          emit(AuthError('An unexpected error occurred. Please check your connection.'));
         }
       } catch (e) {
         emit(AuthError('Something went wrong. Please try again.'));
@@ -41,12 +39,6 @@ class LoginCubit extends BaseAuthCubit {
     final isEmailValid = emailFieldKey.currentState?.validate() ?? false;
     final isPasswordValid = passwordFieldKey.currentState?.validate() ?? false;
     return isEmailValid && isPasswordValid;
-  }
-
-  @override
-  String? validateEmail(String? value) {
-    if (value == null || value.isEmpty) return "Please enter your email";
-    return null;
   }
 
   @override

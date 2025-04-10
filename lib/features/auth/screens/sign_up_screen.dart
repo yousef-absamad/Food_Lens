@@ -2,8 +2,9 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:food_lens/core/awesome_dialog.dart';
-import 'package:food_lens/core/cutom_text_field.dart';
+import 'package:food_lens/core/widgets/awesome_dialog.dart';
+import 'package:food_lens/core/widgets/custom_button.dart';
+import 'package:food_lens/core/widgets/cutom_text_field.dart';
 import 'package:food_lens/features/auth/logic/auth_state.dart';
 import 'package:food_lens/features/auth/logic/sign_up_cubit.dart';
 import 'package:food_lens/features/auth/repo/auth_method.dart';
@@ -120,35 +121,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             color: Colors.green,
                           );
                         }
-                        return SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              final AuthMethod emailPasswordAuth =
-                                  EmailPasswordAuth(
-                                    email: signUpCubit.emailController.text,
-                                    password:
-                                        signUpCubit.passwordController.text,
-                                    isSignUp: true,
-                                    fullName: signUpCubit.fullNameController.text,
-                                  );
-                              signUpCubit.signUp(context, emailPasswordAuth);
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            child: const Text(
-                              "Sign Up",
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
+                        return CustomButton(
+                          label: 'Create Account',
+                          onPressed: () {
+                            final AuthMethod emailPasswordAuth =
+                                EmailPasswordAuth(
+                                  email: signUpCubit.emailController.text,
+                                  password: signUpCubit.passwordController.text,
+                                  isSignUp: true,
+                                  fullName: signUpCubit.fullNameController.text,
+                                );
+                            signUpCubit.signUp(context, emailPasswordAuth);
+                          },
                         );
                       },
                     ),
