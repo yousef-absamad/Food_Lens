@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_lens/core/widgets/error_screen.dart';
 import 'package:food_lens/features/healthContent/Articles/cubit/general_health_cubit.dart';
 import 'package:food_lens/features/healthContent/Articles/cubit/general_health_state.dart';
+import 'package:food_lens/features/healthContent/Articles/repository/articles_health_repository.dart';
 import 'package:food_lens/features/healthContent/Articles/widgets/article_item.dart';
 import 'package:food_lens/core/widgets/pagination_controls.dart';
 
@@ -12,7 +13,7 @@ class GeneralHealthArticlesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => GeneralHealArticlesthCubit()..fetchArticles(),
+      create: (context) => GeneralHealArticlesthCubit(repository: ArticlesRepository())..fetchArticles(),
       child: const _GeneralHealthArticlesScreenContent(),
     );
   }

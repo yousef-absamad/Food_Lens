@@ -1,51 +1,28 @@
-import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_lens/features/healthContent/Articles/cubit/general_health_state.dart';
-import 'package:food_lens/features/healthContent/Articles/model/general_health_article.dart';
-import 'package:http/http.dart' as http;
-import 'package:food_lens/core/constans/constans.dart';
+import 'package:food_lens/features/healthContent/Articles/repository/articles_health_repository.dart';
 
 class GeneralHealArticlesthCubit extends Cubit<GeneralHealthState> {
-  GeneralHealArticlesthCubit() : super(const GeneralHealthState());
+  final ArticlesRepository repository;
+  GeneralHealArticlesthCubit({required this.repository})
+    : super(const GeneralHealthState());
 
   Future<void> fetchArticles() async {
-    emit(
-      state.copyWith(
-        errorMessage: null,
-        status: ArticleStatus.loading,
-      ),
-    );
+    emit(state.copyWith(errorMessage: null, status: ArticleStatus.loading));
 
     try {
-      final response = await http.get(Uri.parse(Constants.generalHealthNews));
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final List<dynamic> newsJson = data['news'] ?? [];
-
-        List<GeneralHealthArticle> articles =
-            newsJson
-                .map((json) => GeneralHealthArticle.fromJson(json))
-                .toList();
-
-        articles.shuffle();
-
-        emit(
-          state.copyWith(
-            articles: articles,
-            currentPage: 0,
-            errorMessage: null,
-            status: ArticleStatus.success,
-          ),
-        );
-      } else {
-        emit(
-          state.copyWith(
-            errorMessage: 'Error loading data: ${response.statusCode}',
-            status: ArticleStatus.failure,
-          ),
-        );
-      }
+      final articles = await repository.fetchArticles(
+        language: 'en',
+        isChronic: true,
+      );
+      emit(
+        state.copyWith(
+          articles: articles,
+          currentPage: 0,
+          errorMessage: null,
+          status: ArticleStatus.success,
+        ),
+      );
     } catch (e) {
       emit(
         state.copyWith(

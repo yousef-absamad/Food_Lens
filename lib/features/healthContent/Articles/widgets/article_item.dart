@@ -5,7 +5,7 @@ import 'package:food_lens/features/healthContent/Articles/model/general_health_a
 import 'package:url_launcher/url_launcher.dart';
 
 class ArticleItem extends StatelessWidget {
-  final GeneralHealthArticle article;
+  final ArticlesModel article;
 
   const ArticleItem({super.key, required this.article});
 

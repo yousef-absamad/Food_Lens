@@ -3,7 +3,7 @@ import 'package:food_lens/features/healthContent/Articles/model/general_health_a
 enum ArticleStatus { initial, loading, success, failure }
 
 class GeneralHealthState {
-  final List<GeneralHealthArticle> articles;
+  final List<ArticlesModel> articles;
   final String? errorMessage;
   final int currentPage;
   final int itemsPerPage;
@@ -17,7 +17,7 @@ class GeneralHealthState {
     this.status = ArticleStatus.initial,
   });
 
-  List<GeneralHealthArticle> get paginatedArticles {
+  List<ArticlesModel> get paginatedArticles {
     final start = currentPage * itemsPerPage;
     final end = (currentPage + 1) * itemsPerPage;
     return articles.sublist(
@@ -29,7 +29,7 @@ class GeneralHealthState {
   int get totalPages => ((articles.length - 1) ~/ itemsPerPage) + 1;
 
   GeneralHealthState copyWith({
-    List<GeneralHealthArticle>? articles,
+    List<ArticlesModel>? articles,
     String? errorMessage,
     int? currentPage,
     int? itemsPerPage,
