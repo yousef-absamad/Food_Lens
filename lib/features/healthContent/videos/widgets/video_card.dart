@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:food_lens/features/healthContent/videos/model/video_model.dart';
 
 class VideoCard extends StatelessWidget {
-  final String videoId;
-  final String title;
-  final String thumbnail;
+  final VideoModel videoModel;
   final void Function(String videoId) onTap;
 
   const VideoCard({
     super.key,
-    required this.videoId,
-    required this.title,
-    required this.thumbnail,
+    required this.videoModel,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onTap(videoId),
+      onTap: () => onTap(videoModel.videoId),
       child: Card(
         elevation: 5.0,
         shape: RoundedRectangleBorder(
@@ -29,8 +26,8 @@ class VideoCard extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
-                thumbnail,
-                fit: BoxFit.cover,
+                videoModel.thumbnailUrl,
+                fit: BoxFit.fill,
                 height: 200,
                 width: double.infinity,
                 loadingBuilder: (context, child, loadingProgress) {
@@ -63,7 +60,7 @@ class VideoCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                title,
+                videoModel.title,
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,

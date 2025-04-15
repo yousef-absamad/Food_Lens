@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:food_lens/features/healthContent/videos/cubit/videos_cubit.dart';
 import 'package:food_lens/features/healthContent/videos/cubit/videos_state.dart';
+import 'package:food_lens/features/healthContent/videos/model/video_model.dart';
+import 'package:food_lens/features/healthContent/videos/repository/video_repository.dart';
 import 'package:food_lens/features/healthContent/videos/screens/video_player_screen.dart';
 
 import '../../../../core/widgets/error_screen.dart';
@@ -9,25 +11,23 @@ import '../../../../core/widgets/pagination_controls.dart';
 import '../widgets/video_card.dart';
 
 class VideosScreen extends StatelessWidget {
-  final String userCondition;
 
-  const VideosScreen({required this.userCondition, super.key});
+  const VideosScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create:
           (context) =>
-              VideosCubit()..initializePlaylistAndFetchVideos(userCondition),
-      child: _VideosScreenContent(userCondition: userCondition),
+              VideosCubit(VideoRepository())..initializePlaylistAndFetchVideos(),
+      child: _VideosScreenContent(),
     );
   }
 }
 
 class _VideosScreenContent extends StatefulWidget {
-  final String userCondition;
 
-  const _VideosScreenContent({required this.userCondition});
+  const _VideosScreenContent();
 
   @override
   _VideosScreenContentState createState() => _VideosScreenContentState();
@@ -83,7 +83,6 @@ class _VideosScreenContentState extends State<_VideosScreenContent> {
         return RefreshIndicator(
           onRefresh: () async {
             await videosCubit.initializePlaylistAndFetchVideos(
-              widget.userCondition,
             );
           },
           child: CustomScrollView(
@@ -91,7 +90,7 @@ class _VideosScreenContentState extends State<_VideosScreenContent> {
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
               SliverAppBar(
-                title: Text("Videos for ${widget.userCondition}"),
+                title: Text("Videos"),
                 floating: true,
                 snap: true,
                 pinned: false,
@@ -120,11 +119,9 @@ class _VideosScreenContentState extends State<_VideosScreenContent> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
-                final video = state.currentPageVideos[index];
+                VideoModel video = state.currentPageVideos[index];
                 return VideoCard(
-                  videoId: video['videoId']!,
-                  title: video['title']!,
-                  thumbnail: video['thumbnail']!,
+                  videoModel: video,
                   onTap: playVideo,
                 );
               },
@@ -149,7 +146,7 @@ class _VideosScreenContentState extends State<_VideosScreenContent> {
           onRetry:
               () => context
                   .read<VideosCubit>()
-                  .initializePlaylistAndFetchVideos(widget.userCondition),
+                  .initializePlaylistAndFetchVideos(),
         );
     }
   }

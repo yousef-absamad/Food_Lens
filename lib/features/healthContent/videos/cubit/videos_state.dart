@@ -1,9 +1,10 @@
 import 'package:equatable/equatable.dart';
+import 'package:food_lens/features/healthContent/videos/model/video_model.dart';
 
 enum VideoStatus { initial, loading, success, failure }
 class VideosState extends Equatable {
-  final List<Map<String, String>> allVideos;
-  final List<Map<String, String>> currentPageVideos;
+  final List<VideoModel> allVideos;
+  final List<VideoModel> currentPageVideos;
   final int currentPage;
   final int itemsPerPage;
   final VideoStatus status;
@@ -21,8 +22,8 @@ class VideosState extends Equatable {
   int get totalPages => ((allVideos.length - 1) ~/ itemsPerPage) + 1;
 
   VideosState copyWith({
-    List<Map<String, String>>? allVideos,
-    List<Map<String, String>>? currentPageVideos,
+    List<VideoModel>? allVideos,
+    List<VideoModel>? currentPageVideos,
     int? currentPage,
     int? totalPages,
     int? itemsPerPage,
@@ -31,7 +32,7 @@ class VideosState extends Equatable {
     bool? showPagination,
   }) {
     return VideosState(
-      allVideos: allVideos ?? this.allVideos,
+      allVideos: allVideos ?? this.allVideos ,
       currentPageVideos: currentPageVideos ?? this.currentPageVideos,
       currentPage: currentPage ?? this.currentPage,
       itemsPerPage: itemsPerPage ?? this.itemsPerPage,
