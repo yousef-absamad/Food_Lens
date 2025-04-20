@@ -1,15 +1,15 @@
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:food_lens/features/Profile/model/user_model.dart';
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({super.key});
+  final UserModel? userModel;
+  const ProfileHeader({super.key, required this.userModel});
 
   @override
   Widget build(BuildContext context) {
-    final user = FirebaseAuth.instance.currentUser;
-    final String name = user?.displayName ?? "User";
-    final String email = user?.email ?? "No email";
+    final String name = userModel?.fullName ?? "User";
+    final String email = userModel?.email ?? "No email";
+    final String? photoURL = userModel?.photoUrl;
     final String firstLetter = name.isNotEmpty ? name[0].toUpperCase() : "?";
 
     return Container(
@@ -34,7 +34,13 @@ class ProfileHeader extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 50,
-            child: Text(firstLetter, style: TextStyle(fontSize: 40)),
+            backgroundImage: photoURL != null ? NetworkImage(photoURL) : null,
+            child: photoURL == null
+                ? Text(
+                    firstLetter,
+                    style: const TextStyle(fontSize: 40),
+                  )
+                : null,
           ),
           const SizedBox(height: 10),
           Text(
