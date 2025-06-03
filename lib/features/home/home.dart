@@ -1,69 +1,117 @@
 import 'package:flutter/material.dart';
-import '../Profile/screens/profile_screen.dart';
-import '../captureImage/screens/camera_screen.dart'; 
-import 'screens/home_screen.dart'; 
+import 'package:flutter_svg/svg.dart';
+import 'package:food_lens/features/Profile/model/user_model.dart';
+import 'package:food_lens/features/Profile/view%20model/repo/user_epository.dart';
+import 'package:food_lens/features/chatbot/view/screens/chat_screen.dart';
+import 'package:food_lens/features/healthContent/Articles/screens/general_health_articles_screen.dart';
+import 'package:food_lens/features/healthContent/videos/screens/videos_screen.dart';
+import '../Profile/views/screens/profile_screen.dart';
+import '../analysisImage/view/screens/scan_screen.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  State<Home> createState() => HomeState();
 }
 
-class _HomeState extends State<Home> {
+class HomeState extends State<Home> {
   int currentIndex = 0;
+  UserModel? currentUser;
 
-  final List<Widget> pages = [
-    HomeScreen(), 
-    CameraScreen(), 
-    ChatBotScreen(), 
-    //EducationalScreen(), 
-    ProfileScreen(), 
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final userRepo = UserRepository();
+    final user = await userRepo.getUserData();
+    setState(() {
+      currentUser = user;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: IndexedStack(
-        index: currentIndex,
-        children: pages,
+    if (currentUser == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    final String healthConditions = [
+      if (currentUser!.hasDiabetes) 'diabetes',
+      if (currentUser!.hasHypertension) 'hypertension',
+    ].join(',');
+
+    final List<Widget> pages = [
+      GeneralHealthArticlesScreen(
+        hasChronicDiseases: currentUser!.hasChronicDiseases,
       ),
+      ScanScreen(healthConditions: healthConditions),
+      ChatScreen(user: currentUser!),
+      VideosScreen(hasChronicDiseases: currentUser!.hasChronicDiseases),
+      ProfileScreen(userModel: currentUser!, onUserUpdated: _loadUserData),
+    ];
+
+    return Scaffold(
+      body: IndexedStack(index: currentIndex, children: pages),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.white,
         type: BottomNavigationBarType.fixed,
+        selectedItemColor: Colors.green,
+        unselectedItemColor: Colors.black,
         currentIndex: currentIndex,
         onTap: (index) {
+          FocusManager.instance.primaryFocus?.unfocus();
+
           setState(() {
             currentIndex = index;
           });
         },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.camera_alt_outlined),
-            label: "Camera",
+            icon: Icon(Icons.article_outlined),
+            label: "Article",
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: "chatbot"),
           BottomNavigationBarItem(
-            icon: Icon(Icons.cast_for_education),
-            label: "Educational",
+            icon: SvgPicture.asset(
+              "assets/image/scan-solid-svgrepo-com.svg",
+              height: 24,
+              width: 26,
+              colorFilter: ColorFilter.mode(
+                currentIndex == 1 ? Colors.green : Colors.black,
+                BlendMode.srcIn,
+              ),
+            ),
+            label: "Scan meal",
+          ),
+          BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              "assets/image/robot-svgrepo-com.svg",
+              height: 24,
+              width: 26,
+              colorFilter: ColorFilter.mode(
+                currentIndex == 2 ? Colors.green : Colors.black,
+                BlendMode.srcIn,
+              ),
+            ),
+            label: "chatbot",
+          ),
+          BottomNavigationBarItem(
+            icon: SvgPicture.asset(
+              "assets/image/video-library-svgrepo-com.svg",
+              height: 24,
+              width: 26,
+              colorFilter: ColorFilter.mode(
+                currentIndex == 3 ? Colors.green : Colors.black,
+                BlendMode.srcIn,
+              ),
+            ),
+            label: "Videos",
           ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
         ],
-      ),
-    );
-  }
-}
-
-class ChatBotScreen extends StatelessWidget {
-  const ChatBotScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Chatbot")),
-      body: Center(
-        child: Text("هذه شاشة الدردشة"),
       ),
     );
   }
