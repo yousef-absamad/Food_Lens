@@ -96,18 +96,3 @@ class ChatProvider extends ChangeNotifier {
     return RegExp(r'[\u0600-\u06FF]').hasMatch(text);
   }
 }
-
-//   String get _userContext {
-//   String context = "user info:\n";
-
-//   context += "name: ${user.fullName ?? 'Not specified'}\n";
-//   context += "gender: ${user.gender ?? 'Not specified'}\n";
-//   context += "age: ${user.age?.toString() ?? 'Not specified'}\n";
-//   context += "weight: ${user.weight != null ? '${user.weight} kg' : 'Not specified'}\n";
-//   context += "height: ${user.height != null ? '${user.height} cm' : 'Not specified'}\n";
-//   context += "has Diabetes: ${user.hasDiabetes ? 'yes' : 'no'}\n";
-//   context += "has Hypertension: ${user.hasHypertension ? 'yes' : 'no'}\n";
-//   context += "---\n";
-
-//   return context;
-// }

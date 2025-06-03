@@ -33,8 +33,6 @@ class MedicalChatDisclaimer extends StatelessWidget {
               ), 
               child: Image.asset(
                 'assets/image/chatdoctor.png',
-                height: 350,
-                fit: BoxFit.fill, 
               ),
             ),
           ),
@@ -46,8 +44,6 @@ class MedicalChatDisclaimer extends StatelessWidget {
             'استشر مختصاً عند الحاجة.',
             style: TextStyle(fontSize: 16),
           ),
-
-          const SizedBox(height: 20),
         ],
       ),
     );
