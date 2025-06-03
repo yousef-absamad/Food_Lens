@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../../../../core/widgets/custom_button.dart';
-import '../../../../core/widgets/cutom_text_field.dart';
+import '../../../../core/widgets/custom_text_field.dart';
 import '../../view model/logic/profile_form_view_model.dart';
 
 class ProfileFormContent extends StatefulWidget {
@@ -46,32 +46,7 @@ class _ProfileFormContentState extends State<ProfileFormContent> {
           });
         }
 
-        
-        // Widget? errorWidget;
-        // if (viewModel.loadStatus == ProfileLoadStatus.error ||
-        //     viewModel.saveOrUpdateStatus == ProfileSaveOrUpdateStatus.error) {
-        //   errorWidget = Container(
-        //     padding: const EdgeInsets.all(8),
-        //     margin: const EdgeInsets.only(bottom: 16),
-        //     decoration: BoxDecoration(
-        //       color: Colors.red[100],
-        //       borderRadius: BorderRadius.circular(8),
-        //     ),
-        //     child: Row(
-        //       children: [
-        //         const Icon(Icons.error_outline, color: Colors.red),
-        //         const SizedBox(width: 8),
-        //         Expanded(
-        //           child: Text(
-        //             viewModel.errorMessage ?? 'An error occurred',
-        //             style: const TextStyle(color: Colors.red),
-        //           ),
-        //         ),
-        //       ],
-        //     ),
-        //   );
-        // }
-
+   
         return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -81,11 +56,7 @@ class _ProfileFormContentState extends State<ProfileFormContent> {
                 SizedBox(
                   height: 250,
                   child: SvgPicture.asset(widget.illustrationsPath),
-                ),
-
-                // // عرض رسالة الخطأ إذا وجدت
-                // if (errorWidget != null) errorWidget,
-
+                ),           
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
