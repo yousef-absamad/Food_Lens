@@ -53,15 +53,15 @@ Food Lens is a mobile application designed to promote healthy eating through AI-
 
 ### Onboarding Screens
 
-![Onboarding Screen](assets\readme\onboarding.png)
+![Onboarding Screen](assets/readme/onboarding.png)
 
 ### Authentication Screens
 
-![Authentication Screens](assets\readme\auth.png)
+![Authentication Screens](assets/readme/auth.png)
 
 ### Main App Features
 
-![Main Features Screens](assets\readme\home.png)
+![Main Features Screens](assets/readme/home.png)
 
 ---
 
