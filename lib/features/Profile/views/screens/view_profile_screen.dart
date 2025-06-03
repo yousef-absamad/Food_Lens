@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:food_lens/features/Profile/model/user_model.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../core/widgets/cutom_text_field.dart';
+import '../../../../core/widgets/custom_text_field.dart';
 import '../../view model/logic/view_profile_view_model.dart';
 
 class ViewProfileScreen extends StatelessWidget {
