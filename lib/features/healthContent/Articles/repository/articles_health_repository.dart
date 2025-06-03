@@ -6,12 +6,10 @@ import 'package:food_lens/features/healthContent/Articles/model/general_health_a
 class ArticlesRepository {
   Future<List<ArticlesModel>> fetchArticles({
     required String language,
-    required bool isChronic,
+    required bool hasChronicDiseases,
   }) async {
     try {
-      //final endpoint ='${Constants.articlesBaseUrl}${Constants.enChronicArticles}.json';
-      final endpoint = '${Constants.articlesBaseUrl}/$language${isChronic ? '/chronic' : '/normal'}.json';
-
+      final endpoint = '${Constants.articlesBaseUrl}/ar${hasChronicDiseases ? '/chronic' : '/normal'}.json';
       final response = await http.get(Uri.parse(endpoint));
 
       if (response.statusCode == 200) {

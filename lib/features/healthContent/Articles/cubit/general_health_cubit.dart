@@ -7,13 +7,13 @@ class GeneralHealArticlesthCubit extends Cubit<GeneralHealthState> {
   GeneralHealArticlesthCubit({required this.repository})
     : super(const GeneralHealthState());
 
-  Future<void> fetchArticles() async {
+  Future<void> fetchArticles(bool hasChronicDiseases) async {
     emit(state.copyWith(errorMessage: null, status: ArticleStatus.loading));
 
     try {
       final articles = await repository.fetchArticles(
-        language: 'en',
-        isChronic: true,
+        language: 'ar',
+        hasChronicDiseases: hasChronicDiseases,
       );
       emit(
         state.copyWith(

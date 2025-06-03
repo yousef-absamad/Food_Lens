@@ -8,19 +8,22 @@ import 'package:food_lens/features/healthContent/Articles/widgets/article_item.d
 import 'package:food_lens/core/widgets/pagination_controls.dart';
 
 class GeneralHealthArticlesScreen extends StatelessWidget {
-  const GeneralHealthArticlesScreen({super.key});
+  final bool hasChronicDiseases;
+   const GeneralHealthArticlesScreen({super.key , required this.hasChronicDiseases});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => GeneralHealArticlesthCubit(repository: ArticlesRepository())..fetchArticles(),
-      child: const _GeneralHealthArticlesScreenContent(),
+      create: (context) => GeneralHealArticlesthCubit(repository: ArticlesRepository())..fetchArticles(hasChronicDiseases),
+      child: _GeneralHealthArticlesScreenContent(hasChronicDiseases:hasChronicDiseases ),
     );
   }
 }
 
 class _GeneralHealthArticlesScreenContent extends StatefulWidget {
-  const _GeneralHealthArticlesScreenContent();
+    final bool hasChronicDiseases;
+
+  const _GeneralHealthArticlesScreenContent({required this.hasChronicDiseases});
 
   @override
   _GeneralHealthArticlesScreenContentState createState() =>
@@ -67,7 +70,7 @@ class _GeneralHealthArticlesScreenContentState
       builder: (context, state) {
         return RefreshIndicator(
           onRefresh: () async {
-            await articlesCubit.fetchArticles();
+            await articlesCubit.fetchArticles(widget.hasChronicDiseases);
           },
           child: CustomScrollView(
             controller: _scrollController,
@@ -76,7 +79,7 @@ class _GeneralHealthArticlesScreenContentState
               const SliverAppBar(
                 floating: true,
                 snap: true,
-                title: Text('General Heal Articles'),
+                title: Text('Articles'),
               ),
               SliverToBoxAdapter(child: _buildBody(context, state)),
             ],
@@ -134,7 +137,7 @@ class _GeneralHealthArticlesScreenContentState
         return ErrorScreen(
           errorMessage: state.errorMessage,
           onRetry:
-              () => context.read<GeneralHealArticlesthCubit>().fetchArticles(),
+              () => context.read<GeneralHealArticlesthCubit>().fetchArticles(widget.hasChronicDiseases),
         );
     }
   }
