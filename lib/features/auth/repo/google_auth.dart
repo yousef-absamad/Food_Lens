@@ -8,7 +8,7 @@ class GoogleAuth implements AuthMethod {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       if (googleUser == null) {
-        throw Exception("Google Sign-In was canceled by the user.");
+        return null;
       }
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
@@ -20,7 +20,6 @@ class GoogleAuth implements AuthMethod {
       User? user = userCredential.user;
       return user;
     } catch (e) {
-      //print("Google Sign-In error: ${e.toString()}");
       return null; 
     }
   }

@@ -21,7 +21,6 @@ class EmailPasswordAuth implements AuthMethod {
     if (isSignUp) {
       userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
-
       User? user = userCredential.user;
       await user?.updateDisplayName(fullName);
       user = FirebaseAuth.instance.currentUser;

@@ -13,6 +13,10 @@ class AuthError extends AuthState {
   final String message;
   AuthError(this.message);
 }
+class GoogleCanceled extends AuthState {
+  final String message;
+  GoogleCanceled(this.message);
+}
 
 class FieldsError extends AuthState {
   final String message;

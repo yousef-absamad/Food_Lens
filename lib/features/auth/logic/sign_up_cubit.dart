@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:food_lens/features/Profile/repo/user_epository.dart';
+import 'package:food_lens/features/Profile/view%20model/repo/user_epository.dart';
 import 'package:food_lens/features/auth/logic/auth_cubit.dart';
 import 'package:food_lens/features/auth/logic/auth_state.dart';
 import 'package:food_lens/features/auth/repo/auth_method.dart';

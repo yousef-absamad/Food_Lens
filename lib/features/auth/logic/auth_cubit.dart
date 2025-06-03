@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:food_lens/features/Profile/repo/user_epository.dart';
-import 'package:food_lens/features/Profile/views/screens/profile_manager_screen.dart';
+import 'package:food_lens/features/Profile/view%20model/repo/user_epository.dart';
+import 'package:food_lens/features/Profile/views/screens/complete_profile_screen.dart';
 import 'package:food_lens/features/auth/emailVerification/views/email_verification_screen.dart';
 import 'package:food_lens/features/auth/logic/auth_state.dart';
 import 'package:food_lens/features/auth/repo/auth_method.dart';
@@ -15,9 +15,11 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController fullNameController = TextEditingController();
 
-  final GlobalKey<FormFieldState> fullNameFieldKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> fullNameFieldKey =
+      GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> emailFieldKey = GlobalKey<FormFieldState>();
-  final GlobalKey<FormFieldState> passwordFieldKey = GlobalKey<FormFieldState>();
+  final GlobalKey<FormFieldState> passwordFieldKey =
+      GlobalKey<FormFieldState>();
 
   BaseAuthCubit(super.initialState);
 
@@ -37,15 +39,13 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
       final User? user = await authMethod.authenticate();
 
       if (user == null) {
-        emit(AuthError("Authentication failed. Please try again."));
+        //emit(GoogleCanceled("Google login was not completed."));
+        emit(GoogleCanceled(""));
+
         return null;
       }
 
-      final DocumentSnapshot userDoc =
-          await FirebaseFirestore.instance
-              .collection("users")
-              .doc(user.uid)
-              .get();
+      final DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection("users").doc(user.uid).get();
 
       final bool isNewUser = !userDoc.exists;
 
@@ -56,7 +56,11 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case 'invalid-credential':
-          emit(AuthError("Invalid email or password. Please check your credentials and try again."));
+          emit(
+            AuthError(
+              "Invalid email or password. Please check your credentials and try again.",
+            ),
+          );
           break;
         case 'email-already-in-use':
           emit(AuthError("This email is already registered."));
@@ -121,11 +125,7 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
         data["gender"] == null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder:
-              (context) =>
-                  const ProfileManagerScreen(mode: ProfileMode.complete),
-        ),
+        MaterialPageRoute(builder: (context) => CompleteProfileScreen()),
       );
       return;
     }
@@ -134,7 +134,6 @@ abstract class BaseAuthCubit extends Cubit<AuthState> {
       MaterialPageRoute(builder: (context) => const Home()),
     );
   }
-
 
   String? validateEmail(String? value) {
     if (value == null || value.isEmpty) return "Please enter your email";

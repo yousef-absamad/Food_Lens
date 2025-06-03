@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:food_lens/core/widgets/awesome_dialog.dart';
 import 'package:food_lens/core/widgets/custom_button.dart';
-import 'package:food_lens/core/widgets/cutom_text_field.dart';
+import 'package:food_lens/core/widgets/custom_text_field.dart';
 import 'package:food_lens/features/auth/logic/auth_state.dart';
 import 'package:food_lens/features/auth/logic/sign_up_cubit.dart';
 import 'package:food_lens/features/auth/repo/auth_method.dart';
@@ -63,7 +63,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         validator: signUpCubit.validateName,
                       ),
                     ),
-                    const SizedBox(height: 10),
                     Form(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       child: CustomTextField(
@@ -76,7 +75,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         validator: signUpCubit.validateEmail,
                       ),
                     ),
-                    const SizedBox(height: 10),
                     Form(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       child: CustomTextField(

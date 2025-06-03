@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:food_lens/features/Profile/views/screens/profile_manager_screen.dart';
+import 'package:food_lens/core/widgets/custom_button.dart';
+import 'package:food_lens/features/Profile/views/screens/complete_profile_screen.dart';
 import '../cubit/email_verification_cubit.dart';
 import '../cubit/email_verification_state.dart';
 
@@ -31,14 +32,12 @@ class EmailVerificationScreen extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 25,
                           fontWeight: FontWeight.bold,
-                          color: Color.fromARGB(255, 8, 161, 133),
+                          color:  Color.fromARGB(255, 3, 169, 8),
                         ),
                       ),
                       SizedBox(
                         height: 350,
-                        child: SvgPicture.asset(
-                          'assets/image/7472011_3675553.svg',
-                        ),
+                        child: SvgPicture.asset('assets/image/email_check.svg'),
                       ),
                       Text(
                         "We sent a verification link to",
@@ -52,8 +51,8 @@ class EmailVerificationScreen extends StatelessWidget {
                         FirebaseAuth.instance.currentUser?.email ??
                             'your email',
                         style: const TextStyle(
-                          fontSize: 16,
-                          color: Color.fromARGB(255, 8, 161, 133),
+                          fontSize: 18,
+                          color:Colors.blueAccent,
                         ),
                       ),
                       SizedBox(height: 20),
@@ -86,42 +85,27 @@ class EmailVerificationScreen extends StatelessWidget {
                             "Resend Verification Email",
                             style: TextStyle(
                               fontSize: 16,
-                              color: Colors.blueAccent,
+                              color: Color.fromARGB(255, 3, 169, 8),
                             ),
                           ),
                         ),
-                      const SizedBox(height: 30),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed:
-                              state is EmailVerificationSuccess
-                                  ? () {
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (context) =>
-                                                const ProfileManagerScreen(
-                                                  mode: ProfileMode.complete,
-                                                ),
-                                      ),
-                                    );
-                                  }
-                                  : null,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          child: const Text(
-                            "Continue",
-                            style: TextStyle(fontSize: 18, color: Colors.white),
-                          ),
-                        ),
+                      const SizedBox(height: 100),
+                      CustomButton(
+                        label: "Continue",
+                        onPressed:
+                            state is EmailVerificationSuccess
+                                ? () {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => CompleteProfileScreen(),
+                                    ),
+                                  );
+                                }
+                                : null,
                       ),
+                    
                       const SizedBox(height: 20),
                     ],
                   ),

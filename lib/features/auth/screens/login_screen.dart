@@ -11,7 +11,7 @@ import 'package:food_lens/features/auth/screens/sign_up_screen.dart';
 
 import '../../../core/widgets/awesome_dialog.dart';
 import '../../../core/widgets/custom_button.dart';
-import '../../../core/widgets/cutom_text_field.dart';
+import '../../../core/widgets/custom_text_field.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -58,7 +58,6 @@ class LoginScreen extends StatelessWidget {
                         formFieldKey: loginCubit.emailFieldKey,
                       ),
                     ),
-                    const SizedBox(height: 10),
                     Form(
                       autovalidateMode: AutovalidateMode.onUserInteraction,
                       child: CustomTextField(
@@ -98,7 +97,7 @@ class LoginScreen extends StatelessWidget {
                             context: context,
                             dialogType: DialogType.error,
                             title: 'Error',
-                            desc: state.message, // Updated to use message
+                            desc: state.message,
                           );
                         } else if (state is FieldsError) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -107,7 +106,16 @@ class LoginScreen extends StatelessWidget {
                               backgroundColor: Colors.red,
                             ),
                           );
-                        } else if (state is AuthForgetPassSuccess) {
+                        } 
+                        // else if (state is GoogleCanceled) {
+                        //   ScaffoldMessenger.of(context).showSnackBar(
+                        //     SnackBar(
+                        //       content: Text(state.message),
+                        //       backgroundColor: Colors.red,
+                        //     ),
+                        //   );
+                        // } 
+                        else if (state is AuthForgetPassSuccess) {
                           awesomeDialog(
                             context: context,
                             dialogType: DialogType.success,
