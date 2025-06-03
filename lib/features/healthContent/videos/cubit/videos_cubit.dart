@@ -11,15 +11,15 @@ class VideosCubit extends Cubit<VideosState> {
 
   final Random _random = Random();
 
-  Future<void> initializePlaylistAndFetchVideos() async {
+  Future<void> initializePlaylistAndFetchVideos(bool hasChronicDiseases) async {
     if (isClosed) return;
 
     emit(state.copyWith(status: VideoStatus.loading));
 
     try {
       String playlistId = await videoRepository.fetchPlaylistId(
-        language: "en",
-        isChronic: true,
+        language: "ar",
+        hasChronicDiseases: hasChronicDiseases,
       );
 
       List<VideoModel> allVideos = [];
@@ -44,6 +44,7 @@ class VideosCubit extends Cubit<VideosState> {
       emit(
         state.copyWith(
           allVideos: allVideos,
+          currentPage: 0,
           currentPageVideos: _getCurrentPageVideos(
             allVideos,
             0,

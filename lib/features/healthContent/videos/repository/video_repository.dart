@@ -9,11 +9,9 @@ class VideoRepository {
 
   Future<String> fetchPlaylistId({
     required String language,
-    required bool isChronic,
+    required bool hasChronicDiseases,
   }) async {
-    final String endpoint = '${Constants.videosBaseUrl}/$language${isChronic ? '/chronic' : '/normal'}.json';
-    //final String endpoint = '${Constants.videosBaseUrl}/ar${isChronic ? '/chronic' : '/normal'}.json';
-    //final String endpoint = 'https://food-lens-1d706-default-rtdb.firebaseio.com/videos/ar/chronic.json';
+    final String endpoint = '${Constants.videosBaseUrl}/$language${hasChronicDiseases ? '/chronic' : '/normal'}.json';
 
     final response = await http.get(Uri.parse(endpoint));
 
@@ -24,7 +22,6 @@ class VideoRepository {
         final playlistId = data["playlistId"];
         if (playlistId != null) {
           return playlistId;
-          //return "PL9MfvCxhfaCRu1o08I8SNuNULIN2Er3XN";
         } else {
           throw Exception('Playlist ID not found');
         }
@@ -53,15 +50,15 @@ class VideoRepository {
       final data = jsonDecode(response.body);
       List<VideoModel> videos = [];
       for (var item in data['items']) {
-      try {
-        videos.add(VideoModel.fromJson(item));
-      } catch (e) {
-        //throw Exception('Failed to convert video to VideoModel');
+        try {
+          videos.add(VideoModel.fromJson(item));
+        } catch (e) {
+          //throw Exception('Failed to convert video to VideoModel');
+        }
       }
-    }
       return {'videos': videos, 'nextPageToken': data['nextPageToken']};
     } else {
       throw Exception('Failed to load videos');
     }
-   }
+  }
 }

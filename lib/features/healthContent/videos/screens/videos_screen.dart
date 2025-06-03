@@ -11,23 +11,26 @@ import '../../../../core/widgets/pagination_controls.dart';
 import '../widgets/video_card.dart';
 
 class VideosScreen extends StatelessWidget {
+  final bool hasChronicDiseases;
 
-  const VideosScreen({super.key});
+  const VideosScreen({super.key, required this.hasChronicDiseases});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create:
           (context) =>
-              VideosCubit(VideoRepository())..initializePlaylistAndFetchVideos(),
-      child: _VideosScreenContent(),
+              VideosCubit(VideoRepository())
+                ..initializePlaylistAndFetchVideos(hasChronicDiseases),
+      child: _VideosScreenContent(hasChronicDiseases: hasChronicDiseases),
     );
   }
 }
 
 class _VideosScreenContent extends StatefulWidget {
+  final bool hasChronicDiseases;
 
-  const _VideosScreenContent();
+  const _VideosScreenContent({required this.hasChronicDiseases});
 
   @override
   _VideosScreenContentState createState() => _VideosScreenContentState();
@@ -83,6 +86,7 @@ class _VideosScreenContentState extends State<_VideosScreenContent> {
         return RefreshIndicator(
           onRefresh: () async {
             await videosCubit.initializePlaylistAndFetchVideos(
+              widget.hasChronicDiseases,
             );
           },
           child: CustomScrollView(
@@ -120,10 +124,7 @@ class _VideosScreenContentState extends State<_VideosScreenContent> {
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 VideoModel video = state.currentPageVideos[index];
-                return VideoCard(
-                  videoModel: video,
-                  onTap: playVideo,
-                );
+                return VideoCard(videoModel: video, onTap: playVideo);
               },
             ),
             PaginationControls(
@@ -137,7 +138,6 @@ class _VideosScreenContentState extends State<_VideosScreenContent> {
               onNextPage: () => context.read<VideosCubit>().goToNextPage(),
               onLastPage: () => context.read<VideosCubit>().goToLastPage(),
             ),
-           
           ],
         );
       case VideoStatus.failure:
@@ -146,7 +146,7 @@ class _VideosScreenContentState extends State<_VideosScreenContent> {
           onRetry:
               () => context
                   .read<VideosCubit>()
-                  .initializePlaylistAndFetchVideos(),
+                  .initializePlaylistAndFetchVideos(widget.hasChronicDiseases),
         );
     }
   }

@@ -76,7 +76,7 @@ class VideoPlayerScreenState extends State<VideoPlayerScreen> {
               showVideoProgressIndicator: true,
               aspectRatio: 16 / 9,
               onReady: () {
-                print("Player is ready");
+                //print("Player is ready");
               },
               onEnded: (metaData) {
                 Navigator.pop(context);
