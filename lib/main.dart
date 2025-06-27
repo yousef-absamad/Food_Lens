@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:food_lens/launcher_screen.dart';
-import 'package:food_lens/features/intro/onboard/services/on_boarding_services.dart';
+import 'package:food_lens/features/onboard/services/on_boarding_services.dart';
 import 'package:food_lens/firebase_options.dart';
 
 void main() async {

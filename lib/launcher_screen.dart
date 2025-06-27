@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:food_lens/features/auth/screens/login_screen.dart';
 import 'package:food_lens/features/home/home.dart';
-import 'package:food_lens/features/intro/onboard/screens/onboard_screen.dart';
-import 'package:food_lens/features/intro/onboard/services/on_boarding_services.dart';
+import 'package:food_lens/features/onboard/screens/onboard_screen.dart';
+import 'package:food_lens/features/onboard/services/on_boarding_services.dart';
 
 class LauncherScreen extends StatefulWidget {
   const LauncherScreen({super.key});
